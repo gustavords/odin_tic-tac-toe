@@ -1,0 +1,99 @@
+You’re going to store the gameboard as an array inside of a Gameboard object, so start there! Your players are also going to be stored in objects, and you’re probably going to want an object to control the flow of the game itself.
+
+    Your main goal here is to have as little global code as possible. Try tucking everything away inside of a module or factory. Rule of thumb: if you only ever need ONE of something (gameBoard, displayController), use a module. If you need multiples of something (players!), create them with factories.
+
+
+--Gameboard {} module
+  --gameboard []
+  --gamePlay()
+  --displayGameboard ()
+
+--Player{} factory
+  --name 
+  --choices [] //max 3
+  --score
+
+
+Set up your HTML and write a JavaScript function that will render the contents of the gameboard array to the webpage (for now you can just manually fill in the array with "X"s and "O"s)
+
+--logic: gamePlay()
+array size: 9
+[0][1][2][3][4][5][6][7][8]
+
+Display:   Winning Possibilities: (at either 5/6 turns)
+[0][1][2]  vertical pattern: +1
+[3][4][5]  horizontal pattern: +3
+[6][7][8]  diagonal pattern: +4 or +2 
+
+no numbers in the array can repeat, since it would mean they clicked on the same spot
+
+
+spaceBetweenChoices(choices){
+    const sortedChoices = choices.toSorted((a,b)=>return {a-b});
+    let space = 0;
+    if((sortedChoices[2] - sortedChoices[1]) === (sortedChoices[1] - sortedChoices[0])){
+        space = sortedChoices[2] - sortedChoices[1];
+    }
+    return space;
+}
+
+function results(player1, player2){
+    if(player1.choices.length === 3 || player2.choices.length === 3){
+        const player = {};
+        if(player1.choices.length === 3){
+            player = player1;
+        }
+        else{
+            player = player2;
+        }
+        switch(spaceBetweenChoices(player.choices)){
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                player.addPoint(); //round winner point 
+                displayWinner(player);
+            default:
+                noWinner()
+        }
+    }
+}
+
+//an actual round
+const roundChoices = [];
+
+function rounds(){  
+    document.querySelectorAll(`.tttDivs`).forEach((area)=>{
+        area.onclick = () =>{
+            roundChoices.push(area.id);
+        }
+    });
+
+    //separate into individual player choices array
+    if(roundChoices >= 5){
+        for(let x = 0; x <= roundChoices.length-1; x+2){
+            player1.choices.push(roundChoices[x]);
+        }
+        for(let x = 1; x <= roundChoices.length-1; x+2){
+            player2.choices.push(roundChoices[x]);
+        }
+    }
+}
+
+
+
+Build the functions that allow players to add marks to a specific spot on the board, and then tie it to the DOM, letting players click on the gameboard to place their marker. Don’t forget the logic that keeps players from playing in spots that are already taken!
+
+
+
+    Think carefully about where each bit of logic should reside. Each little piece of functionality should be able to fit in the game, player or gameboard objects. Take care to put them in “logical” places. Spending a little time brainstorming here can make your life much easier later!
+    If you’re having trouble, Building a house from the inside out is a great article that lays out a highly applicable example of how you might organize your code for this project.
+
+Build the logic that checks for when the game is over! Should check for 3-in-a-row and a tie.
+Clean up the interface to allow players to put in their names, include a button to start/restart the game and add a display element that congratulates the winning player!
+Optional - If you’re feeling ambitious create an AI so that a player can play against the computer!
+
+    Start by just getting the computer to make a random legal move.
+    Once you’ve gotten that, work on making the computer smart. It is possible to create an unbeatable AI using the minimax algorithm (read about it here, some googling will help you out with this one)
+    If you get this running definitely come show it off in the chatroom. It’s quite an accomplishment!
+
