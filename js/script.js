@@ -9,18 +9,52 @@
 //   --choices [] //max 3 //private
 //   --score   //private
 
-const Gameboard = (() => {
-    const gameboard = [];
-    const addToGameboard = (string) => { gameboard.push(string); }
+const Gameboard = ((gameboard = []) => {
+    const getGameboard = () => gameboard;
+    const addToGameboard = (string) => { getGameboard().push(string); }
     const spaceBetweenChoices = () => {
-        const sortedChoices = gameboard.toSorted((a, b) => { return a - b });
-        let space = 0;
-        if ((sortedChoices[2] - sortedChoices[1]) === (sortedChoices[1] - sortedChoices[0])) {
-            space = sortedChoices[2] - sortedChoices[1];
-        }
-        return space;
+        // const sortedChoices = getGameboard().toSorted((a, b) => { return a - b });
+        // debugger;
+        //if playerSYmbol shows up in a certain pattern within the array, that person has won
+        // getGameboard().includes()
+        // let arr = [0, 1, 3, 2, 7, 6];
+
+        // const hor_1 = [0, 1, 2];
+
+        // arr.every((element) => {
+        //     return arr.include(element);
+        // });
+        const arr = ['one', 'two', 'three', 'four'];
+        const values = ['one', 'two'];
+
+        const multipleExist = values.every(value => {
+            return arr.includes(value);
+        });
+
+        // console.log(multipleExist); // 👉️ true
+        return multipleExist;
+
     }
-    return { gameboard };
+
+    const gameResults = () => {
+        console.log(`space=${spaceBetweenChoices()}`);
+        switch (spaceBetweenChoices()) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                console.log(`A PLayer has won -> space=${spaceBetweenChoices()}`);
+            //player won
+            default:
+                console.log(`nobody won`);
+
+            //nobody won
+        }
+    };
+
+    return { gameboard, getGameboard, addToGameboard, gameResults };
+
+
 })();
 
 const Player = (name, symbolChoice) => {
@@ -45,17 +79,20 @@ document.querySelectorAll(`.ttt-cell`).forEach((cell) => {
 
                 if (firstPlayerTurn) {
                     e.target.textContent = `X`;
-                    Gameboard.gameboard.push(`X`);
+                    //Gameboard.gameboard.push(`X`);
+                    Gameboard.addToGameboard(e.target.id);
                     firstPlayerTurn = false;
                 }
                 else {
                     e.target.textContent = `O`;
-                    Gameboard.gameboard.push(`O`);
+                    // Gameboard.gameboard.push(`O`);
+                    Gameboard.addToGameboard(e.target.id);
                     firstPlayerTurn = true;
                 }
             }
             console.log(e.target.id);
-            console.log(Gameboard.gameboard);
+            console.log(Gameboard.getGameboard());
+            console.log(Gameboard.gameResults());
         }
 
     });
